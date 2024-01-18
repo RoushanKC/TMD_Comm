@@ -1,6 +1,8 @@
 import concurrent.futures
 from Connection import Connection
 from Event_manager import Event_manager
+import msvcrt
+import os
 
 
 class Controller:
@@ -17,6 +19,23 @@ if __name__=='__main__':
     em=Event_manager()
     ctrl=Controller()
     em.subscribe("raktDicke_Pos" ,ctrl.callback)
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
-        ex.submit(con.receive)
-        ex.submit(em.em_loop)
+    ex=concurrent.futures.ThreadPoolExecutor(max_workers=2)
+    future1=ex.submit(con.receive)
+    future2=ex.submit(em.em_loop)
+    
+    try:
+        while True:
+            if msvcrt.kbhit():
+                key = msvcrt.getch()
+                if key == b'q':  # Exit on 'q' key press
+                    print("Exiting...")
+                    ex.shutdown(wait=False)  # Shutdown the executor 
+                    break        
+            # ... (other code in your main thread)
+    except Exception as e:
+        print(f"Error during execution: {e}")
+        ex.shutdown(wait=False)
+    os._exit(0)
+    
+    
+    

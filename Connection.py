@@ -57,7 +57,7 @@ class Connection:
                     bolt_addr=addr+(i*4)
                     tdata=packet[bolt_addr : bolt_addr+offset_len]
                     if(len(tdata)==offset_len):
-                        value=struct.unpack(decode_format ,tdata)
+                        value=struct.unpack(decode_format ,tdata)[0]
                     bolt_arr.append(value)
                 parsed_data[name]=bolt_arr
             elif(addr==1540):
@@ -66,13 +66,13 @@ class Connection:
                     pos_addr=addr+(i*4)
                     tdata=packet[pos_addr : pos_addr+offset_len]
                     if(len(tdata)==offset_len):
-                        value=struct.unpack(decode_format ,tdata)
+                        value=struct.unpack(decode_format ,tdata)[0]
                     pos_arr.append(value)
                 parsed_data[name]=pos_arr
             else:
                 tdata=packet[addr : addr+offset_len]
                 if(len(tdata)==offset_len):
-                    value=struct.unpack(decode_format ,tdata)
+                    value=struct.unpack(decode_format ,tdata)[0]
                     parsed_data[name]=value
         return parsed_data
     
